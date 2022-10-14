@@ -13,11 +13,10 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
   const refresh = () => setState(!state);
 
   const initNewTask = () => {
-    tasks.push({ name: "1", desc: "3", tasks: [] });
+    tasks.push({ name: "Task Name", desc: "description", tasks: [] });
     refresh();
   };
 
-  console.log("size of task " + tasks.length);
   return (
     <div className={s.root}>
       <h1 className={s.heading}>{name}</h1>
@@ -30,8 +29,16 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
           <div key={i} className={s.orbit}>
             <div className={s.taskContainer}>
               <div className={s.task}>
-                <h1>Task {i}</h1>
-                <p>{task.name}</p>
+                <div className={s.taskProgress}>
+                  <img src="./waves.svg" />
+                  <div></div>
+                </div>
+                <h1 contentEditable suppressContentEditableWarning>
+                  {task.name}
+                </h1>
+                <p contentEditable suppressContentEditableWarning>
+                  {task.desc}
+                </p>
               </div>
             </div>
           </div>
