@@ -28,9 +28,11 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
       {tasks.map((task, i) => {
         return (
           <div key={i} className={s.orbit}>
-            <div className={s.task}>
-              <h1>Task {i}</h1>
-              <p>{task.name}</p>
+            <div className={s.taskContainer}>
+              <div className={s.task}>
+                <h1>Task {i}</h1>
+                <p>{task.name}</p>
+              </div>
             </div>
           </div>
         );
