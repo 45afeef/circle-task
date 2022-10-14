@@ -1,0 +1,120 @@
+.root {
+  width: 95vmin;
+  background-color: white;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: black;
+  position: relative;
+  animation: heartbeat 3s ease-in-out 0s infinite forwards;
+  /* overflow: hidden; */
+}
+
+.root>* {
+  position: absolute;
+}
+
+.heading {
+  font-size: 5vmin;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.desc {
+  font-size: 2vmin;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.button {
+  z-index: 10;
+  top: 45%;
+  left: 45%;
+  width: 10%;
+  height: 10%;
+  cursor: pointer;
+  aspect-ratio: 1;
+  padding: 1vmin;
+  border-radius: 50%;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.orbit {
+  top: calc(100%/6);
+  left: calc(100%/6);
+  width: calc(200%/3);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  /* background-color: black; */
+  /* border: solid black; */
+  color: white;
+  border-radius: 50;
+  animation: pulse 30s ease-in 2s infinite ;
+}
+
+.task {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: black;
+  color: white;
+  border-radius: 50%;
+  width: 48%;
+  height: 48%;
+}
+
+.orbit:nth-of-type(1) {
+  rotate: 72deg;
+}
+
+.orbit:nth-of-type(2) {
+  rotate: -72deg;
+}
+
+.orbit:nth-of-type(3) {
+  rotate: 144deg;
+}
+
+.orbit:nth-of-type(4) {
+  rotate: -144deg;
+}
+
+.orbit:nth-of-type(5) {
+  top: 48%;
+}
+
+@keyframes pulse {
+  from {
+    scale: 1;
+  }
+
+  50% {
+    scale: .9;
+  }
+
+  to {
+    scale: 1;
+
+  }
+}
+
+
+@keyframes heartbeat {
+  from {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(.99);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes spin-right {
+  100% {
+    transform: rotate(360deg);
+  }
+}
