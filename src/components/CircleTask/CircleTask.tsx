@@ -17,24 +17,26 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
     refresh();
   };
 
+  const degreeOfSection = 360 / (tasks.length + 1);
   return (
     <div className={s.root}>
       <h1 className={s.heading}>{name}</h1>
       <p className={s.desc}>{desc}</p>
-      {tasks.length < 5 && (
+      {tasks.length < 10 && (
         <img className={s.button} src="./add.svg" onClick={initNewTask} />
       )}
       {tasks.map((task, i) => {
+        const rotation = degreeOfSection * (i + 1);
         return (
-          <div key={i} className={s.orbit}>
-            <div className={s.taskContainer}>
-              <div className={s.task}>
+          <div key={i} className={s.axis} style={{ rotate: `-${rotation}deg` }}>
+            <div>
+              <div className={s.task} style={{ rotate: `${rotation}deg` }}>
                 <div className={s.taskProgress}>
                   <img src="./waves.svg" />
                   <div></div>
                 </div>
                 <h1 contentEditable suppressContentEditableWarning>
-                  {task.name}
+                  {task.name} {i}
                 </h1>
                 <p contentEditable suppressContentEditableWarning>
                   {task.desc}
