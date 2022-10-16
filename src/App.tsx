@@ -5,7 +5,11 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <CircleTask name="" description="" tasks={[]} />
+        <CircleTask
+          name="Parayada"
+          description="The next and ever best learning platform"
+          tasks={[]}
+        />
       </header>
     </div>
   );

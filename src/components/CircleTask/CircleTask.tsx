@@ -31,7 +31,7 @@ const CircleTask: FC<task> = (mainTask) => {
             minLength={5}
             onSubmit={(newName: string) => updateMainTask({ name: newName })}
             className={s.heading}
-            placeHolder="Enter project name here"
+            placeHolder="Enter your project name"
           />
         </div>
       )}
@@ -40,14 +40,14 @@ const CircleTask: FC<task> = (mainTask) => {
         <p className={`${s.desc} animate-fromCenter`}>{state.description}</p>
       ) : (
         state.name && (
-          <div className="animate-zoom-in">
+          <div className="animate-zoom-in w-full">
             <InputBox
               minLength={20}
               onSubmit={(newDesc: string) =>
                 updateMainTask({ description: newDesc })
               }
               className={`${s.desc} rounded border-black border-2`}
-              placeHolder="Describe your project task here"
+              placeHolder="Describe your project here"
               textarea
             />
           </div>
@@ -55,22 +55,32 @@ const CircleTask: FC<task> = (mainTask) => {
       )}
       {/* New task button */}
       {state.name && state.description && state.tasks.length < 11 && (
-        <img
-          className={`${s.button} animate-zoom-in`}
-          src="./add.svg"
-          onClick={() =>
-            updateMainTask({
-              tasks: [
-                ...state.tasks,
-                { name: "Task", description: "description", tasks: [] },
-              ],
-            })
-          }
-        />
+        <>
+          <img
+            className={`${s.button} animate-zoom-in`}
+            src="./add.svg"
+            onClick={() =>
+              updateMainTask({
+                tasks: [
+                  ...state.tasks,
+                  { name: "Task", description: "description", tasks: [] },
+                ],
+              })
+            }
+          />
+          <p
+            className="text-base whitespace-nowrap text-center animate-zoom-in"
+            style={{ marginTop: "11%" }}
+          >
+            Click to create tasks
+          </p>
+        </>
       )}
       {/* Section for sub tasks starts here */}
       {state.tasks.map(({ name, description }, i) => {
         const rotation = degreeOfSection * (i + 1);
+        // TODO change the demo progress to original one, which is different for each task
+        const progress = i * 10;
         return (
           // .axis and its first child manages the rotation
           <div
@@ -96,11 +106,12 @@ const CircleTask: FC<task> = (mainTask) => {
                 {/* sub task progress */}
                 <div
                   className={s.taskProgress}
-                  style={{ height: `${i * 10}%` }}
+                  style={{ height: `${progress}%` }}
                 >
                   <img src="./waves.svg" />
                   <div></div>
                 </div>
+                <p className="absolute bottom-0 text-xs">{progress}%</p>
                 {/* sub task name */}
                 <h1
                   contentEditable
