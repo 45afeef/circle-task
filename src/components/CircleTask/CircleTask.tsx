@@ -46,8 +46,9 @@ const CircleTask: FC<task> = (mainTask) => {
               onSubmit={(newDesc: string) =>
                 updateMainTask({ description: newDesc })
               }
-              className={s.desc}
-              placeHolder="Describe your task here"
+              className={`${s.desc} rounded border-black border-2`}
+              placeHolder="Describe your project task here"
+              textarea
             />
           </div>
         )

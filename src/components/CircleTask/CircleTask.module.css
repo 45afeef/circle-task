@@ -23,8 +23,16 @@
 }
 
 .desc {
+  @apply text-center;
   font-size: 2vmin;
   top: 10%;
+  width: 65%;
+}
+
+.desc:hover{
+  z-index: 100;
+  background-color: white;
+  color: black;
 }
 
 .button {

@@ -26,7 +26,7 @@ module.exports = {
         "shake-left-right": "shake 1s linear infinite",
         "zoom-in": "zoom 1s linear 1",
         "opacity-forwards": "opacity 1s linear 1",
-        fromCenter: "fromCenter 1s linear 1 forwards",
+        fromCenter: "fromCenter .5s linear 1 forwards",
       },
     },
   },
