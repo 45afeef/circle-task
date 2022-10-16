@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <CircleTask name="" desc="" tasks={[]} />
+        <CircleTask name="" description="" tasks={[]} />
       </header>
     </div>
   );

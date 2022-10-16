@@ -1,50 +1,74 @@
-import { FC, useState } from "react";
+import { FC, useState, useReducer } from "react";
 import InputBox from "../Common/InputBox";
 import s from "./CircleTask.module.css";
 
 type task = {
   name: string;
-  desc: string;
+  description: string;
   tasks: task[];
 };
 
-const CircleTask: FC<task> = ({ name, desc, tasks }) => {
-  // Utility fucntion to refresh the component
-  const [state, setState] = useState(true);
-  const refresh = () => setState(!state);
-
-  const [selected, setSelected] = useState(-1);
-
-  const initNewTask = () => {
-    tasks.push({ name: "Task Name", desc: "description", tasks: [] });
-    refresh();
+const CircleTask: FC<task> = (mainTask) => {
+  // reducer to store all data in this componentd
+  const reducer = (state: task, update: any): task => {
+    return { ...state, ...update };
   };
+  const [state, updateMainTask] = useReducer(reducer, mainTask);
 
-  const degreeOfSection = 360 / (tasks.length + 1);
+  // selected subtask indicator, this helps in zooming the hovering subtask
+  const [selected, setSelected] = useState(-1);
+  // degreeOrSection helps in deciding the rotation angle of each sub task
+  const degreeOfSection = 360 / (state.tasks.length + 1);
+
   return (
     <div className={s.root} onMouseLeave={() => setSelected(-1)}>
       {/* Check if name is provided, if not get it */}
-      {name ? (
-        <h1 className={s.heading}>{name}</h1>
+      {state.name ? (
+        <h1 className={`${s.heading} animate-fromCenter`}>{state.name}</h1>
       ) : (
-        <InputBox
-          minLength={5}
-          onSubmit={(newName: string) => {
-            alert("the new name is " + newName);
-            name = newName;
-            refresh();
-          }}
-          className={s.heading}
-          placeHolder="Enter project name here"
+        <div className="animate-zoom-in">
+          <InputBox
+            minLength={5}
+            onSubmit={(newName: string) => updateMainTask({ name: newName })}
+            className={s.heading}
+            placeHolder="Enter project name here"
+          />
+        </div>
+      )}
+      {/* Check if description is provided, if not get it */}
+      {state.description ? (
+        <p className={`${s.desc} animate-fromCenter`}>{state.description}</p>
+      ) : (
+        state.name && (
+          <div className="animate-zoom-in">
+            <InputBox
+              minLength={20}
+              onSubmit={(newDesc: string) =>
+                updateMainTask({ description: newDesc })
+              }
+              className={s.desc}
+              placeHolder="Describe your task here"
+            />
+          </div>
+        )
+      )}
+      {/* New task button */}
+      {state.name && state.description && state.tasks.length < 11 && (
+        <img
+          className={`${s.button} animate-zoom-in`}
+          src="./add.svg"
+          onClick={() =>
+            updateMainTask({
+              tasks: [
+                ...state.tasks,
+                { name: "Task", description: "description", tasks: [] },
+              ],
+            })
+          }
         />
       )}
-      <p className={s.desc}>{desc}</p>
-      {/* New task button */}
-      {name && desc && tasks.length < 11 && (
-        <img className={s.button} src="./add.svg" onClick={initNewTask} />
-      )}
       {/* Section for sub tasks starts here */}
-      {tasks.map(({ name, desc }, i) => {
+      {state.tasks.map(({ name, description }, i) => {
         const rotation = degreeOfSection * (i + 1);
         return (
           // .axis and its first child manages the rotation
@@ -90,7 +114,7 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
                   suppressContentEditableWarning
                   onFocus={() => setSelected(i)}
                 >
-                  {desc}
+                  {description}
                 </p>
               </div>
             </div>
