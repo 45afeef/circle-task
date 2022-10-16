@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import InputBox from "../Common/InputBox";
 import s from "./CircleTask.module.css";
 
 type task = {
@@ -22,14 +23,31 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
   const degreeOfSection = 360 / (tasks.length + 1);
   return (
     <div className={s.root} onMouseLeave={() => setSelected(-1)}>
-      <h1 className={s.heading}>{name}</h1>
+      {/* Check if name is provided, if not get it */}
+      {name ? (
+        <h1 className={s.heading}>{name}</h1>
+      ) : (
+        <InputBox
+          minLength={5}
+          onSubmit={(newName: string) => {
+            alert("the new name is " + newName);
+            name = newName;
+            refresh();
+          }}
+          className={s.heading}
+          placeHolder="Enter project name here"
+        />
+      )}
       <p className={s.desc}>{desc}</p>
-      {tasks.length < 11 && (
+      {/* New task button */}
+      {name && desc && tasks.length < 11 && (
         <img className={s.button} src="./add.svg" onClick={initNewTask} />
       )}
+      {/* Section for sub tasks starts here */}
       {tasks.map(({ name, desc }, i) => {
         const rotation = degreeOfSection * (i + 1);
         return (
+          // .axis and its first child manages the rotation
           <div
             key={i}
             className={s.axis}
@@ -39,7 +57,9 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
                 selected === -1 ? "90%" : selected === i ? "30vmin" : "105%",
             }}
           >
+            {/* This div helps in rotating  */}
             <div>
+              {/* sub task */}
               <div
                 className={s.task}
                 style={{
@@ -48,6 +68,7 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
                 }}
                 onMouseEnter={() => setSelected(i)}
               >
+                {/* sub task progress */}
                 <div
                   className={s.taskProgress}
                   style={{ height: `${i * 10}%` }}
@@ -55,6 +76,7 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
                   <img src="./waves.svg" />
                   <div></div>
                 </div>
+                {/* sub task name */}
                 <h1
                   contentEditable
                   suppressContentEditableWarning
@@ -62,6 +84,7 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
                 >
                   {name} {i}
                 </h1>
+                {/* sub task description */}
                 <p
                   contentEditable
                   suppressContentEditableWarning
@@ -74,6 +97,7 @@ const CircleTask: FC<task> = ({ name, desc, tasks }) => {
           </div>
         );
       })}
+      {/* Section for tasks ends here */}
     </div>
   );
 };
