@@ -2,26 +2,36 @@ import { FC, useReducer } from "react";
 import InputBox from "../Common/InputBox";
 import s from "./CircleTask.module.css";
 
-type task = {
+export type task = {
   name: string;
   description: string;
   tasks: task[];
-  selected: number;
+  selected?: number;
 };
 
-const CircleTask: FC<task> = (mainTask) => {
+const CircleTask: FC<task> = ({ name, description, tasks, selected = -1 }) => {
   // reducer to store all data in this componentd
   const reducer = (state: task, update: any): task => {
     return { ...state, ...update };
   };
   // selected variable is used to indicate the currently selected subtask
   const [state, dispatch] = useReducer(reducer, {
-    ...mainTask,
-    selected: -1,
+    name: name,
+    description: description,
+    tasks: tasks,
+    selected: selected,
   });
 
   // degreeOrSection helps in deciding the rotation angle of each sub task
   const degreeOfSection = 360 / (state.tasks.length + 1);
+
+  // helping functions
+  const removeTaskByIndex = (i: number) => {
+    state.tasks.splice(i, 1);
+    dispatch({
+      selected: -1,
+    });
+  };
 
   return (
     <div className={s.root} onMouseLeave={() => dispatch({ selected: -1 })}>
@@ -61,6 +71,7 @@ const CircleTask: FC<task> = (mainTask) => {
             className={`${s.button} animate-zoom-in`}
             src="./add.svg"
             onClick={() =>
+              // Add new task
               dispatch({
                 tasks: [
                   ...state.tasks,
@@ -117,11 +128,7 @@ const CircleTask: FC<task> = (mainTask) => {
                 }}
                 onMouseEnter={() => dispatch({ selected: i })}
                 onClick={() => {
-                  console.log("removing " + i);
-                  state.tasks.splice(i, 1);
-                  dispatch({
-                    selected: -1,
-                  });
+                  dispatch(state.tasks.at(i));
                 }}
               >
                 {/* sub task progress */}
