@@ -1,4 +1,4 @@
-import { FC, useState, useReducer } from "react";
+import { FC, useReducer } from "react";
 import InputBox from "../Common/InputBox";
 import s from "./CircleTask.module.css";
 
@@ -6,6 +6,7 @@ type task = {
   name: string;
   description: string;
   tasks: task[];
+  selected: number;
 };
 
 const CircleTask: FC<task> = (mainTask) => {
@@ -13,15 +14,17 @@ const CircleTask: FC<task> = (mainTask) => {
   const reducer = (state: task, update: any): task => {
     return { ...state, ...update };
   };
-  const [state, updateMainTask] = useReducer(reducer, mainTask);
+  // selected variable is used to indicate the currently selected subtask
+  const [state, dispatch] = useReducer(reducer, {
+    ...mainTask,
+    selected: -1,
+  });
 
-  // selected subtask indicator, this helps in zooming the hovering subtask
-  const [selected, setSelected] = useState(-1);
   // degreeOrSection helps in deciding the rotation angle of each sub task
   const degreeOfSection = 360 / (state.tasks.length + 1);
 
   return (
-    <div className={s.root} onMouseLeave={() => setSelected(-1)}>
+    <div className={s.root} onMouseLeave={() => dispatch({ selected: -1 })}>
       {/* Check if name is provided, if not get it */}
       {state.name ? (
         <h1 className={`${s.heading} animate-fromCenter`}>{state.name}</h1>
@@ -29,7 +32,7 @@ const CircleTask: FC<task> = (mainTask) => {
         <div className="animate-zoom-in">
           <InputBox
             minLength={5}
-            onSubmit={(newName: string) => updateMainTask({ name: newName })}
+            onSubmit={(newName: string) => dispatch({ name: newName })}
             className={s.heading}
             placeHolder="Enter your project name"
           />
@@ -43,9 +46,7 @@ const CircleTask: FC<task> = (mainTask) => {
           <div className="animate-zoom-in w-full">
             <InputBox
               minLength={20}
-              onSubmit={(newDesc: string) =>
-                updateMainTask({ description: newDesc })
-              }
+              onSubmit={(newDesc: string) => dispatch({ description: newDesc })}
               className={`${s.desc} rounded border-black border-2`}
               placeHolder="Describe your project here"
               textarea
@@ -60,10 +61,14 @@ const CircleTask: FC<task> = (mainTask) => {
             className={`${s.button} animate-zoom-in`}
             src="./add.svg"
             onClick={() =>
-              updateMainTask({
+              dispatch({
                 tasks: [
                   ...state.tasks,
-                  { name: "Task", description: "description", tasks: [] },
+                  {
+                    name: "Task",
+                    description: "description",
+                    tasks: [],
+                  },
                 ],
               })
             }
@@ -89,7 +94,11 @@ const CircleTask: FC<task> = (mainTask) => {
             style={{
               rotate: `-${rotation}deg`,
               height:
-                selected === -1 ? "90%" : selected === i ? "30vmin" : "105%",
+                state.selected === -1
+                  ? "90%"
+                  : state.selected === i
+                  ? "30vmin"
+                  : "105%",
             }}
           >
             {/* This div helps in rotating  */}
@@ -99,9 +108,21 @@ const CircleTask: FC<task> = (mainTask) => {
                 className={s.task}
                 style={{
                   rotate: `${rotation}deg`,
-                  scale: selected === -1 ? ".8" : selected === i ? "2" : ".3",
+                  scale:
+                    state.selected === -1
+                      ? ".8"
+                      : state.selected === i
+                      ? "2"
+                      : ".3",
                 }}
-                onMouseEnter={() => setSelected(i)}
+                onMouseEnter={() => dispatch({ selected: i })}
+                onClick={() => {
+                  console.log("removing " + i);
+                  state.tasks.splice(i, 1);
+                  dispatch({
+                    selected: -1,
+                  });
+                }}
               >
                 {/* sub task progress */}
                 <div
@@ -116,15 +137,15 @@ const CircleTask: FC<task> = (mainTask) => {
                 <h1
                   contentEditable
                   suppressContentEditableWarning
-                  onFocus={() => setSelected(i)}
+                  onFocus={() => dispatch({ selected: i })}
                 >
-                  {name} {i}
+                  {name}
                 </h1>
                 {/* sub task description */}
                 <p
                   contentEditable
                   suppressContentEditableWarning
-                  onFocus={() => setSelected(i)}
+                  onFocus={() => dispatch({ selected: i })}
                 >
                   {description}
                 </p>

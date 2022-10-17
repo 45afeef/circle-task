@@ -27,10 +27,11 @@
   font-size: 2vmin;
   top: 10%;
   width: 65%;
+  transition-duration: 1s;
 }
 
-.desc:hover{
-  @apply z-50 bg-white text-black scale-125 rounded; 
+.desc:hover {
+  @apply z-50 bg-white text-black scale-125 rounded;
 }
 
 .button {
@@ -45,7 +46,7 @@
 .axis {
   width: 0px;
   pointer-events: none;
-  transition-duration: 1s;  
+  transition-duration: 1s;
 }
 
 .axis>div {
