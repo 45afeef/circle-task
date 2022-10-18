@@ -20,9 +20,13 @@ type circleTaskState = {
 };
 
 enum Action {
+  // Used to create new sub task for the currently opened task
   newTask,
+  // Used to update fields of the currently opened task like name, description etc
   updateTask,
+  // Used to Highlight the selected subtask from currently opened task. The selected task should bring in front
   selectTask,
+  // Used to Open a subtask from the currently Opened task. After this the newly Opened sub task will become new current task
   openTask,
 }
 
@@ -155,9 +159,10 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
         )}
       {/* Hide the BACK button for the project task */}
       {state.taskIndex.length > 2 && (
-        <p
+        <button
           className="bottom-0"
           onClick={() => {
+            // Open Parent task
             dispatch({
               action: Action.openTask,
               data: state.taskIndex.slice(0, -2),
@@ -165,7 +170,7 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
           }}
         >
           Back
-        </p>
+        </button>
       )}
       {/* Section for sub tasks starts here */}
       {state.task.name &&
@@ -204,15 +209,10 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                         : ".3",
                   }}
                   onMouseEnter={() => {
+                    // Highlight the selected task
                     dispatch({
                       action: Action.selectTask,
                       data: i,
-                    });
-                  }}
-                  onClick={() => {
-                    dispatch({
-                      action: Action.openTask,
-                      data: state.taskIndex + "." + i,
                     });
                   }}
                 >
@@ -224,7 +224,19 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                     <img src="./waves.svg" />
                     <div></div>
                   </div>
-                  <p className="absolute bottom-0 text-xs">{progress}%</p>
+                  <button
+                    className="absolute top-0 text-xs"
+                    onClick={() => {
+                      // Open child task
+                      dispatch({
+                        action: Action.openTask,
+                        data: state.taskIndex + "." + i,
+                      });
+                    }}
+                  >
+                    Open
+                  </button>
+
                   {/* sub task name */}
                   <h1
                     contentEditable
@@ -251,6 +263,7 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                   >
                     {description}
                   </p>
+                  <p className="absolute bottom-0 text-xs">{progress}%</p>
                 </div>
               </div>
             </div>
