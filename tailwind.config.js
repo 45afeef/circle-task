@@ -24,8 +24,8 @@ module.exports = {
       },
       animation: {
         "shake-left-right": "shake 1s linear infinite",
-        "zoom-in": "zoom 1s linear 1",
-        "opacity-forwards": "opacity 1s linear 1",
+        "zoom-in": "zoom 1s linear 1s",
+        "fade-in": "opacity 1s ease-in 1",
         fromCenter: "fromCenter .5s linear 1 forwards",
       },
     },
