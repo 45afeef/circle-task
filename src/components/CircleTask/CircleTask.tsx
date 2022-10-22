@@ -22,7 +22,7 @@ type circleTaskState = {
 
 enum Action {
   // Used to create new sub task for the currently opened task
-  newTask,
+  newSubTask,
   // Used to update fields of the currently opened task like name, description etc
   updateTask,
   // Used to update the fields of the currently selected sub task like name, description etc
@@ -41,7 +41,7 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
     { action, data }: { action: Action; data: any }
   ): circleTaskState => {
     switch (action) {
-      case Action.newTask:
+      case Action.newSubTask:
         // use reducer triggered two time every time,
         // so I'm using this wired way to solve the problem of multiple new task creation bug in single click
         if (state.task.tasks.length === data.taskLength)
@@ -50,17 +50,20 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
             description: "Dummy Description",
             tasks: [],
           });
-        return { ...state, selected: data.taskLength };
+        state.selected = data.taskLength;
+        break;
       case Action.updateTask:
-        return { ...state, task: { ...state.task, ...data } };
+        state.task[data.field === "name" ? "name" : "description"] = data.value;
+        break;
       case Action.updateSubTask:
         state.task.tasks[data.taskIndex] = {
           ...state.task.tasks.at(data.taskIndex),
           ...data.task,
         };
-        return { ...state };
+        break;
       case Action.selectTask:
-        return { ...state, selected: data };
+        state.selected = data;
+        break;
       case Action.openTask:
         // The ProjectTask will always have the taskIndex "0"
         var task = { ...project };
@@ -72,17 +75,19 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
           .substr(2)
           .split(".")
           .forEach((i: string) => {
-            var newTask = task.tasks.at(parseInt(i));
-            if (newTask) {
-              task = newTask;
+            var newSubTask = task.tasks.at(parseInt(i));
+            if (newSubTask) {
+              task = newSubTask;
             }
           });
 
-        return { task: task, selected: -1, taskIndex: data };
+        state = { task: task, selected: -1, taskIndex: data };
+        break;
       default:
         console.error("what happened here", state);
-        return { ...state };
+        break;
     }
+    return { ...state };
   };
 
   // selected variable is used to indicate the currently selected subtask
@@ -110,7 +115,7 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
             onSubmit={(newName: string) =>
               dispatch({
                 action: Action.updateTask,
-                data: { name: newName },
+                data: { field: "name", value: newName },
               })
             }
             className={s.heading}
@@ -131,7 +136,7 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
               onSubmit={(newDesc: string) =>
                 dispatch({
                   action: Action.updateTask,
-                  data: { description: newDesc },
+                  data: { field: "description", value: newDesc },
                 })
               }
               className={`${s.desc} rounded border-black border-2`}
@@ -154,7 +159,7 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
               onClick={() =>
                 // Add new task
                 dispatch({
-                  action: Action.newTask,
+                  action: Action.newSubTask,
                   data: { taskLength: state.task.tasks.length },
                 })
               }
