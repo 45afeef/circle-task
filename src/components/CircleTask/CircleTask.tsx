@@ -25,8 +25,6 @@ enum Action {
   newSubTask,
   // Used to update fields of the currently opened task like name, description etc
   updateTask,
-  // Used to update the fields of the currently selected sub task like name, description etc
-  updateSubTask,
   // Used to Highlight the selected subtask from currently opened task. The selected task should bring in front
   selectTask,
   // Used to Open a subtask from the currently Opened task. After this the newly Opened sub task will become new current task
@@ -54,12 +52,6 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
         break;
       case Action.updateTask:
         state.task[data.field === "name" ? "name" : "description"] = data.value;
-        break;
-      case Action.updateSubTask:
-        state.task.tasks[data.taskIndex] = {
-          ...state.task.tasks.at(data.taskIndex),
-          ...data.task,
-        };
         break;
       case Action.selectTask:
         state.selected = data;
@@ -258,18 +250,8 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                     editable
                     className={s.taskName}
                     onUpdate={(newName) => {
-                      console.log("wow the new name is " + newName);
-                      dispatch({
-                        action: Action.updateSubTask,
-                        data: { task: { name: newName }, taskIndex: i },
-                      });
+                      state.task.tasks[i].name = newName;
                     }}
-                    onFocus={() =>
-                      dispatch({
-                        action: Action.selectTask,
-                        data: i,
-                      })
-                    }
                   />
 
                   {/* sub task description */}
@@ -278,20 +260,8 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                     editable
                     className={s.taskDescription}
                     onUpdate={(newDescription) => {
-                      dispatch({
-                        action: Action.updateSubTask,
-                        data: {
-                          task: { description: newDescription },
-                          taskIndex: i,
-                        },
-                      });
+                      state.task.tasks[i].description = newDescription;
                     }}
-                    onFocus={() =>
-                      dispatch({
-                        action: Action.selectTask,
-                        data: i,
-                      })
-                    }
                   />
                   {/* Progress number by percentage */}
                   <p className="absolute bottom-0 text-xs">{progress}%</p>
