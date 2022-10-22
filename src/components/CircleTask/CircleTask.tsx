@@ -54,9 +54,9 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
       case Action.updateTask:
         return { ...state, task: { ...state.task, ...data } };
       case Action.updateSubTask:
-        state.task.tasks[state.selected] = {
-          ...state.task.tasks.at(state.selected),
-          ...data,
+        state.task.tasks[data.taskIndex] = {
+          ...state.task.tasks.at(data.taskIndex),
+          ...data.task,
         };
         return { ...state };
       case Action.selectTask:
@@ -256,7 +256,7 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                       console.log("wow the new name is " + newName);
                       dispatch({
                         action: Action.updateSubTask,
-                        data: { name: newName },
+                        data: { task: { name: newName }, taskIndex: i },
                       });
                     }}
                     onFocus={() =>
@@ -275,7 +275,10 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                     onUpdate={(newDescription) => {
                       dispatch({
                         action: Action.updateSubTask,
-                        data: { description: newDescription },
+                        data: {
+                          task: { description: newDescription },
+                          taskIndex: i,
+                        },
                       });
                     }}
                     onFocus={() =>
