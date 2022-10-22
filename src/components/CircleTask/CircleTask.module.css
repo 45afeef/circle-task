@@ -90,12 +90,12 @@
   height: 100%;
 }
 
-.task>h1 {
+.taskName {
   font-size: 3.5vmin;
   mix-blend-mode: difference;
 }
 
-.task>p {
+.taskDescription {
   font-size: 1.5vmin;
   mix-blend-mode: difference;
 }

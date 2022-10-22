@@ -1,5 +1,6 @@
-import { FC, useContext, useEffect, useReducer } from "react";
+import { FC, useContext, useReducer } from "react";
 import { ProjectContext } from "../../App";
+import EditableText from "../Common/EditableText";
 import InputBox from "../Common/InputBox";
 import s from "./CircleTask.module.css";
 
@@ -24,6 +25,8 @@ enum Action {
   newTask,
   // Used to update fields of the currently opened task like name, description etc
   updateTask,
+  // Used to update the fields of the currently selected sub task like name, description etc
+  updateSubTask,
   // Used to Highlight the selected subtask from currently opened task. The selected task should bring in front
   selectTask,
   // Used to Open a subtask from the currently Opened task. After this the newly Opened sub task will become new current task
@@ -50,6 +53,12 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
         return { ...state, selected: data.taskLength };
       case Action.updateTask:
         return { ...state, task: { ...state.task, ...data } };
+      case Action.updateSubTask:
+        state.task.tasks[state.selected] = {
+          ...state.task.tasks.at(state.selected),
+          ...data,
+        };
+        return { ...state };
       case Action.selectTask:
         return { ...state, selected: data };
       case Action.openTask:
@@ -239,31 +248,43 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                   </button>
 
                   {/* sub task name */}
-                  <h1
-                    contentEditable
-                    suppressContentEditableWarning
+                  <EditableText
+                    text={name}
+                    editable
+                    className={s.taskName}
+                    onUpdate={(newName) => {
+                      console.log("wow the new name is " + newName);
+                      dispatch({
+                        action: Action.updateSubTask,
+                        data: { name: newName },
+                      });
+                    }}
                     onFocus={() =>
                       dispatch({
                         action: Action.selectTask,
                         data: i,
                       })
                     }
-                  >
-                    {name}
-                  </h1>
+                  />
+
                   {/* sub task description */}
-                  <p
-                    contentEditable
-                    suppressContentEditableWarning
+                  <EditableText
+                    text={description}
+                    editable
+                    className={s.taskDescription}
+                    onUpdate={(newDescription) => {
+                      dispatch({
+                        action: Action.updateSubTask,
+                        data: { description: newDescription },
+                      });
+                    }}
                     onFocus={() =>
                       dispatch({
                         action: Action.selectTask,
                         data: i,
                       })
                     }
-                  >
-                    {description}
-                  </p>
+                  />
                   {/* Progress number by percentage */}
                   <p className="absolute bottom-0 text-xs">{progress}%</p>
                 </div>
