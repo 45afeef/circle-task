@@ -41,13 +41,13 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
       case Action.newTask:
         // use reducer triggered two time every time,
         // so I'm using this wired way to solve the problem of multiple new task creation bug in single click
-        if (state.task.tasks.length == data.taskLength)
+        if (state.task.tasks.length === data.taskLength)
           state.task.tasks.push({
             name: "Dummy Task",
-            description: "Description",
+            description: "Dummy Description",
             tasks: [],
           });
-        return { ...state };
+        return { ...state, selected: data.taskLength };
       case Action.updateTask:
         return { ...state, task: { ...state.task, ...data } };
       case Action.selectTask:
@@ -135,12 +135,13 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
       {/* New task button */}
       {state.task.name &&
         state.task.description &&
-        state.task.tasks.at(-1)?.name != "Dummy Task" &&
+        state.task.tasks.at(-1)?.name !== "Dummy Task" &&
         state.task.tasks.length < 11 && (
           <>
             <img
               className={`${s.button} animate-fade-in`}
               src="./add.svg"
+              alt="new task"
               onClick={() =>
                 // Add new task
                 dispatch({
@@ -216,12 +217,12 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                     });
                   }}
                 >
-                  {/* sub task progress */}
+                  {/* Wave animated progress indicator of each and every task */}
                   <div
                     className={s.taskProgress}
                     style={{ height: `${progress}%` }}
                   >
-                    <img src="./waves.svg" />
+                    <img src="./waves.svg" alt={`completed ${progress}%`} />
                     <div></div>
                   </div>
                   <button
@@ -263,6 +264,7 @@ const CircleTask: FC<{ taskIndex: string }> = ({ taskIndex }) => {
                   >
                     {description}
                   </p>
+                  {/* Progress number by percentage */}
                   <p className="absolute bottom-0 text-xs">{progress}%</p>
                 </div>
               </div>
